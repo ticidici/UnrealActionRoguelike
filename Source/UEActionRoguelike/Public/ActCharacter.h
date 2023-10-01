@@ -25,6 +25,8 @@ public:
 	
 protected:
 
+	bool WantsToStopJump = false;
+	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
@@ -37,6 +39,8 @@ protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void PrimaryAttack();
+	void Jump();
+	void StopJump();
 	
 public:	
 	// Called every frame

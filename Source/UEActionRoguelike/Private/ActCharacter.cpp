@@ -19,9 +19,17 @@ AActCharacter::AActCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+    UCharacterMovementComponent* const L_CharacterMovement = GetCharacterMovement();
+	L_CharacterMovement->bOrientRotationToMovement = true;
 	
 	bUseControllerRotationYaw = false;
+
+	JumpMaxCount = 1;
+	JumpMaxHoldTime = 0.3f;
+	L_CharacterMovement->JumpZVelocity = 800;
+	L_CharacterMovement->GravityScale = 8;
+	L_CharacterMovement->bApplyGravityWhileJumping = true;
+	
 }
 
 // Called when the game starts or when spawned
@@ -35,7 +43,20 @@ void AActCharacter::BeginPlay()
 void AActCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	if(WantsToStopJump)
+	{
+		//is falling is actually like airborne, it can be moving upwards
+		if(!GetCharacterMovement()->IsFalling())
+		{
+			WantsToStopJump = false;
+		}
+		else if(JumpForceTimeRemaining < (1 - 0.5f) * JumpMaxHoldTime)
+		{
+			WantsToStopJump = false;
+			StopJumping();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -49,6 +70,8 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AActCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AActCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AActCharacter::StopJump);
 }
 
 void AActCharacter::MoveForward(float Value)
@@ -83,4 +106,24 @@ void AActCharacter::PrimaryAttack()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+}
+
+void AActCharacter::Jump()
+{
+	Super::Jump();
+}
+
+void AActCharacter::StopJump()
+{
+	if(JumpKeyHoldTime < JumpMaxHoldTime)
+	{
+		if(JumpKeyHoldTime > 0.5f * JumpMaxHoldTime)
+		{
+			StopJumping();
+		}
+		else
+		{
+			WantsToStopJump = true;
+		}
+	}
 }
