@@ -3,6 +3,7 @@
 
 #include "ActCharacter.h"
 
+#include "ActInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -16,8 +17,11 @@ AActCharacter::AActCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");//string is only for visualization in editor
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->bUsePawnControlRotation = true;
+	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	InteractComp = CreateDefaultSubobject<UActInteractionComponent>("InteractComponent");
 
     UCharacterMovementComponent* const L_CharacterMovement = GetCharacterMovement();
 	L_CharacterMovement->bOrientRotationToMovement = true;
@@ -72,6 +76,8 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AActCharacter::PrimaryAttack);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AActCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AActCharacter::StopJump);
+	
+	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AActCharacter::PrimaryInteract);
 }
 
 void AActCharacter::MoveForward(float Value)
@@ -125,5 +131,13 @@ void AActCharacter::StopJump()
 		{
 			WantsToStopJump = true;
 		}
+	}
+}
+
+void AActCharacter::PrimaryInteract()
+{
+	if(InteractComp)
+	{
+		InteractComp->PrimaryInteract();
 	}
 }

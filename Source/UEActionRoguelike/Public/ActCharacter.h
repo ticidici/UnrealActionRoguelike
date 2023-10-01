@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ActCharacter.generated.h"
 
+class UActInteractionComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -26,13 +27,16 @@ public:
 protected:
 
 	bool WantsToStopJump = false;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 
+	UPROPERTY(VisibleAnywhere)
+	UActInteractionComponent* InteractComp;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -41,6 +45,7 @@ protected:
 	void PrimaryAttack();
 	void Jump();
 	void StopJump();
+	void PrimaryInteract();
 	
 public:	
 	// Called every frame
