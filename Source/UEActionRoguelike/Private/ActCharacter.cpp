@@ -40,7 +40,6 @@ AActCharacter::AActCharacter()
 void AActCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -74,6 +73,8 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AActCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &AActCharacter::SecondaryAttack);
+	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AActCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AActCharacter::StopJump);
 	
@@ -119,7 +120,28 @@ void AActCharacter::PrimaryAttack_TimeElapsed()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(MagicProjectileClass, SpawnTM, SpawnParams);
+}
+
+void AActCharacter::SecondaryAttack()
+{
+	PlayAnimMontage(AttackAnim);
+
+	//for now it's actually the same animation
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &AActCharacter::SecondaryAttack_TimeElapsed, 0.2f);
+}
+
+void AActCharacter::SecondaryAttack_TimeElapsed()
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	
+	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
+	
+	GetWorld()->SpawnActor<AActor>(BlackHoleProjectileClass, SpawnTM, SpawnParams);
 }
 
 void AActCharacter::Jump()

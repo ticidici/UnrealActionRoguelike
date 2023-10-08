@@ -5,6 +5,7 @@
 
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 AActExplosiveBarrel::AActExplosiveBarrel()
@@ -40,7 +41,12 @@ void AActExplosiveBarrel::PostInitializeComponents()
 void AActExplosiveBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	RadialForceComp->FireImpulse();
+	
+	UE_LOGFMT(LogCore, Warning, "New normal log. Other actor: {OtherActorName}", GetNameSafe(OtherActor));
 
+	FString CombinedString = FString::Printf(TEXT("Hit at Location: %s"), *Hit.ImpactPoint.ToString());
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
+	
 	//UMeshComponent* OtherMesh = OtherActor->FindComponentByClass<UMeshComponent>();
 	//if(OtherMesh != nullptr)
 	//{
