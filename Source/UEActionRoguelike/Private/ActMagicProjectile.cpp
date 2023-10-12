@@ -3,6 +3,7 @@
 
 #include "ActMagicProjectile.h"
 
+#include "ActAttributeComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -13,9 +14,25 @@ AActMagicProjectile::AActMagicProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	SphereComp->SetCollisionProfileName("Projectile");
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActMagicProjectile::OnActorOverlap);
+	
 	MovementComp->InitialSpeed = 1000.0f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
+}
+
+void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor)
+	{
+		UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(OtherActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
+		if(AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.0f);
+			Destroy();
+		}
+	}
 }
 
 // Called when the game starts or when spawned

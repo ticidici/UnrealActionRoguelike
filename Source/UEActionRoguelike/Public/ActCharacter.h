@@ -9,6 +9,7 @@
 class UActInteractionComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UActAttributeComponent;
 
 UCLASS()
 class UEACTIONROGUELIKE_API AActCharacter : public ACharacter
@@ -27,7 +28,10 @@ protected:
 	UAnimMontage* AttackAnim;
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UActAttributeComponent* AttributeComp;
+
 public:
 	// Sets default values for this character's properties
 	AActCharacter();

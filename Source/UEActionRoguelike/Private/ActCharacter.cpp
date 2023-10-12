@@ -3,6 +3,7 @@
 
 #include "ActCharacter.h"
 
+#include "ActAttributeComponent.h"
 #include "ActInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,6 +23,8 @@ AActCharacter::AActCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	InteractComp = CreateDefaultSubobject<UActInteractionComponent>("InteractComponent");
+
+	AttributeComp = CreateDefaultSubobject<UActAttributeComponent>("AttributeComp");
 
     UCharacterMovementComponent* const L_CharacterMovement = GetCharacterMovement();
 	L_CharacterMovement->bOrientRotationToMovement = true;

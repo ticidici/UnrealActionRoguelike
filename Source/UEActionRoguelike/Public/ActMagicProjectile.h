@@ -14,11 +14,14 @@ class UEACTIONROGUELIKE_API AActMagicProjectile : public AActProjectileBase
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	// Sets default values for this actor's properties
 	AActMagicProjectile();
 
 protected:
+	
+	UFUNCTION()
+	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
