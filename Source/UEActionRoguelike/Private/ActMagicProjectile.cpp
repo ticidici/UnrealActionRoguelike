@@ -24,7 +24,7 @@ AActMagicProjectile::AActMagicProjectile()
 void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor)
+	if(OtherActor && OtherActor != GetInstigator())
 	{
 		UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(OtherActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
 		if(AttributeComp)
