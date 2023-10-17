@@ -78,6 +78,8 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AActCharacter::PrimaryAttack);
 	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &AActCharacter::SecondaryAttack);
 	
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AActCharacter::DashProjectile);
+	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AActCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AActCharacter::StopJump);
 	
@@ -115,15 +117,7 @@ void AActCharacter::PrimaryAttack()
 
 void AActCharacter::PrimaryAttack_TimeElapsed()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-	
-	GetWorld()->SpawnActor<AActor>(MagicProjectileClass, SpawnTM, SpawnParams);
+	SpawnProjectile(MagicProjectileClass);
 }
 
 void AActCharacter::SecondaryAttack()
@@ -136,15 +130,58 @@ void AActCharacter::SecondaryAttack()
 
 void AActCharacter::SecondaryAttack_TimeElapsed()
 {
+	SpawnProjectile(BlackHoleProjectileClass);
+}
+
+void AActCharacter::DashProjectile()
+{
+	PlayAnimMontage(AttackAnim);
+
+	//for now it's actually the same animation
+	GetWorldTimerManager().SetTimer(TimerHandle_DashProjectile, this, &AActCharacter::DashProjectile_TimeElapsed, 0.2f);
+}
+
+void AActCharacter::DashProjectile_TimeElapsed()
+{
+	SpawnProjectile(DashProjectileClass);
+}
+
+void AActCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
+{
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 	
-	GetWorld()->SpawnActor<AActor>(BlackHoleProjectileClass, SpawnTM, SpawnParams);
+	FCollisionShape Shape;
+	Shape.SetSphere(20.0f);
+
+	//Ignore Player
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	FCollisionObjectQueryParams ObjParams;
+	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+	FVector TraceStart = CameraComp->GetComponentLocation();
+
+	//endpoint far into the look-at distance
+	FVector TraceEnd = CameraComp->GetComponentLocation() + GetControlRotation().Vector() * 5000;//assumes crosshair in center
+	
+	FHitResult Hit;
+	if(GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
+	{
+		TraceEnd = Hit.ImpactPoint;
+	}
+
+	//FRotator ProjRotation = (TraceEnd - HandLocation).Rotation();
+	FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
+		
+	FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
 void AActCharacter::Jump()

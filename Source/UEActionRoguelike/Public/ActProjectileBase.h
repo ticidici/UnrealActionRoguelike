@@ -10,7 +10,7 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UEACTIONROGUELIKE_API AActProjectileBase : public AActor
 {
 	GENERATED_BODY()
@@ -21,6 +21,9 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ImpactVFX;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
 
@@ -29,4 +32,15 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UParticleSystemComponent* EffectComp;
+
+	UFUNCTION()
+	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );
+
+	//BlueprintNativeEvent =  C++ base implementation, can be expanded in blueprints
+	//BlueprintCallable to allow child classes to trigger explosions
+	//not required for now but useful for expanding in blueprint later on
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Explode();
+
+	virtual void PostInitializeComponents() override;
 };

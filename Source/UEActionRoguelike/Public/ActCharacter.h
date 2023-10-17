@@ -25,9 +25,13 @@ protected:
 	TSubclassOf<AActor> BlackHoleProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> DashProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_DashProjectile;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UActAttributeComponent* AttributeComp;
@@ -58,9 +62,13 @@ protected:
 	void PrimaryAttack_TimeElapsed();
 	void SecondaryAttack();
 	void SecondaryAttack_TimeElapsed();
+	void DashProjectile();
+	void DashProjectile_TimeElapsed();
 	void Jump();
 	void StopJump();
 	void PrimaryInteract();
+
+	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	
 public:	
 	// Called every frame

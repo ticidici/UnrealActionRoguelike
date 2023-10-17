@@ -17,8 +17,6 @@ AActMagicProjectile::AActMagicProjectile()
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActMagicProjectile::OnActorOverlap);
 	
 	MovementComp->InitialSpeed = 1000.0f;
-	MovementComp->bRotationFollowsVelocity = true;
-	MovementComp->bInitialVelocityInLocalSpace = true;
 }
 
 void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -30,22 +28,7 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		if(AttributeComp)
 		{
 			AttributeComp->ApplyHealthChange(-20.0f);
-			Destroy();
+			Explode();
 		}
 	}
 }
-
-// Called when the game starts or when spawned
-void AActMagicProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AActMagicProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
