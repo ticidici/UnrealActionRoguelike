@@ -6,6 +6,7 @@
 #include "ActAttributeComponent.h"
 #include "ActInteractionComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -37,6 +38,12 @@ AActCharacter::AActCharacter()
 	L_CharacterMovement->GravityScale = 8;
 	L_CharacterMovement->bApplyGravityWhileJumping = true;
 	
+}
+
+void AActCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	AttributeComp->OnHealthChanged.AddDynamic(this, &AActCharacter::OnHealthChanged);
 }
 
 // Called when the game starts or when spawned
@@ -211,3 +218,15 @@ void AActCharacter::PrimaryInteract()
 		InteractComp->PrimaryInteract();
 	}
 }
+
+void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
+	float Delta)
+{
+	if(NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		DisableInput(PC);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	}
+}
+

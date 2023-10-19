@@ -9,6 +9,11 @@ UActAttributeComponent::UActAttributeComponent()
 	Health = 100;
 }
 
+bool UActAttributeComponent::IsAlive() const
+{
+	return Health > 0.0f;
+}
+
 bool UActAttributeComponent::ApplyHealthChange(float Delta)
 {
 	Health += Delta;

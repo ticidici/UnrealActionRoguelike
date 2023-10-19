@@ -27,8 +27,8 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(OtherActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
 		if(AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
-			Explode();
+			AttributeComp->ApplyHealthChange(-abs(DamageAmount));
 		}
+		Explode();
 	}
 }

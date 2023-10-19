@@ -42,7 +42,7 @@ void AActProjectileBase::Explode_Implementation()
 {
 	//calling Destroy marks the actor as pending kill (deprecated, now use IsValid)
 	//we use ensure to see if this happens at all, pointing to another potential problem
-	if(/*ensure*/(!IsValid(this)))
+	if(ensure(IsValid(this)))
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
 

@@ -69,6 +69,11 @@ protected:
 	void PrimaryInteract();
 
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	virtual void PostInitializeComponents() override;
 	
 public:	
 	// Called every frame
