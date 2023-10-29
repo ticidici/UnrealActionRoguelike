@@ -6,20 +6,23 @@
 #include "GameFramework/Character.h"
 #include "ActAICharacter.generated.h"
 
+class UPawnSensingComponent;
+
 UCLASS()
 class UEACTIONROGUELIKE_API AActAICharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AActAICharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPawnSensingComponent* PawnSensingComponent;
+
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
 };

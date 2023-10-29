@@ -9,13 +9,18 @@
 void AActAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	RunBehaviorTree(BehaviorTree);
 
-	APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if(MyPawn)
+	if(ensureMsgf(BehaviorTree, TEXT("Behavior Tree is nullptr! Please assign BehaviorTree in your AI Controller.")))
 	{
-		GetBlackboardComponent()->SetValueAsVector("MoveToLocation", MyPawn->GetActorLocation());
-
-		GetBlackboardComponent()->SetValueAsObject("TargetActor", MyPawn);
+		RunBehaviorTree(BehaviorTree);
 	}
+
+	/// we remove this to use a sensing component instead 
+	// APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	// if(MyPawn)
+	// {
+	// 	GetBlackboardComponent()->SetValueAsVector("MoveToLocation", MyPawn->GetActorLocation());
+	//
+	// 	GetBlackboardComponent()->SetValueAsObject("TargetActor", MyPawn);
+	// }
 }
