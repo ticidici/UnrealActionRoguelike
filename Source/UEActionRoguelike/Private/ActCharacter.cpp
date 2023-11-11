@@ -222,11 +222,17 @@ void AActCharacter::PrimaryInteract()
 void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
 	float Delta)
 {
-	if(NewHealth <= 0.0f && Delta < 0.0f)
+	if(Delta < 0.0f)
 	{
-		APlayerController* PC = Cast<APlayerController>(GetController());
-		DisableInput(PC);
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashSpeedParamName, HitFlashSpeed);
+		GetMesh()->SetVectorParameterValueOnMaterials(HitFlashColorParamName, FVector(HitFlashColor.R, HitFlashColor.G, HitFlashColor.B));
+		if(NewHealth <= 0.0f)
+		{
+			APlayerController* PC = Cast<APlayerController>(GetController());
+			DisableInput(PC);
+			GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+		}
 	}
 }
 

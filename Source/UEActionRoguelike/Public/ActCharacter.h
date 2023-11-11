@@ -33,6 +33,18 @@ protected:
 	FTimerHandle TimerHandle_SecondaryAttack;
 	FTimerHandle TimerHandle_DashProjectile;
 
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName TimeToHitParamName = TEXT("TimeToHit");
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName HitFlashSpeedParamName = TEXT("HitFlashSpeed");
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName HitFlashColorParamName = TEXT("HitFlashColor");
+	
+	UPROPERTY(EditAnywhere, Category = "Receive Hit")
+	float HitFlashSpeed;
+	UPROPERTY(EditAnywhere, Category = "Receive Hit")
+	FColor HitFlashColor;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UActAttributeComponent* AttributeComp;
 

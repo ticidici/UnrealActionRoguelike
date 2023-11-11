@@ -19,6 +19,12 @@ AActMagicProjectile::AActMagicProjectile()
 	MovementComp->InitialSpeed = 1000.0f;
 }
 
+void AActMagicProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
+}
+
 void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -32,3 +38,4 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		Explode();
 	}
 }
+

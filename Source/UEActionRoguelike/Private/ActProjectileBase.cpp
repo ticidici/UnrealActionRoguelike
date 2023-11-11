@@ -3,10 +3,12 @@
 
 #include "ActProjectileBase.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AActProjectileBase::AActProjectileBase()
@@ -31,6 +33,12 @@ void AActProjectileBase::PostInitializeComponents()
 	SphereComp->OnComponentHit.AddDynamic(this, &AActProjectileBase::OnActorHit);
 }
 
+void AActProjectileBase::BeginPlay()
+{
+	Super::BeginPlay();
+	if(LoopSFX) LoopAudioComponent = UGameplayStatics::SpawnSoundAttached(LoopSFX, RootComponent);
+}
+
 void AActProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -44,8 +52,10 @@ void AActProjectileBase::Explode_Implementation()
 	//we use ensure to see if this happens at all, pointing to another potential problem
 	if(ensure(IsValid(this)))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
-
+		const FVector ProjectileLocation = GetActorLocation();
+		if(ImpactVFX) UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, ProjectileLocation, GetActorRotation());
+		if(ImpactSFX) UGameplayStatics::PlaySoundAtLocation(this, ImpactSFX, ProjectileLocation);
+		if(LoopAudioComponent) LoopAudioComponent->Stop();
 		Destroy();
 	}
 }

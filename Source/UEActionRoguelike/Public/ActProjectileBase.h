@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ActProjectileBase.generated.h"
 
+class USoundCue;
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
@@ -23,6 +24,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystem* ImpactVFX;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* ImpactSFX;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* LoopSFX;
+
+	UAudioComponent* LoopAudioComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
@@ -42,5 +51,7 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
 
+	virtual void BeginPlay() override;
+	
 	virtual void PostInitializeComponents() override;
 };
