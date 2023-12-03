@@ -33,12 +33,18 @@ protected:
 	FTimerHandle TimerHandle_SecondaryAttack;
 	FTimerHandle TimerHandle_DashProjectile;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UParticleSystem* CastingEffect;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeToHitParamName = TEXT("TimeToHit");
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName HitFlashSpeedParamName = TEXT("HitFlashSpeed");
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName HitFlashColorParamName = TEXT("HitFlashColor");
+
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName HandSocketName = TEXT("Muzzle_01");
 	
 	UPROPERTY(EditAnywhere, Category = "Receive Hit")
 	float HitFlashSpeed;
@@ -80,6 +86,8 @@ protected:
 	void StopJump();
 	void PrimaryInteract();
 
+	void PrepareAttack();
+	
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 
 	UFUNCTION()

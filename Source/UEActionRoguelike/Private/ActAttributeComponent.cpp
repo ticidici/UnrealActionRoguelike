@@ -15,6 +15,16 @@ bool UActAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
+bool UActAttributeComponent::isFullHealth()
+{
+	return Health >= MaxHealth;
+}
+
+float UActAttributeComponent::GetHealthMax()
+{
+	return MaxHealth;
+}
+
 bool UActAttributeComponent::ApplyHealthChange(float Delta)
 {
 	float OldHealth = Health;

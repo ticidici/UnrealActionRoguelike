@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AActCharacter::AActCharacter()
@@ -115,10 +116,20 @@ void AActCharacter::MoveRight(float Value)
 	AddMovementInput(RightVector, Value);
 }
 
+void AActCharacter::PrepareAttack()
+{
+	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName,
+		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
+	FRotator ActorRotation = GetActorRotation();
+	FRotator ControllerRotation = GetControlRotation();
+	ActorRotation.Yaw = ControllerRotation.Yaw;
+	SetActorRotation(ActorRotation);
+}
+
 void AActCharacter::PrimaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
-
+	PrepareAttack();
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AActCharacter::PrimaryAttack_TimeElapsed, 0.2f);
 }
 
@@ -130,6 +141,7 @@ void AActCharacter::PrimaryAttack_TimeElapsed()
 void AActCharacter::SecondaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
+	PrepareAttack();
 
 	//for now it's actually the same animation
 	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &AActCharacter::SecondaryAttack_TimeElapsed, 0.2f);
@@ -143,6 +155,7 @@ void AActCharacter::SecondaryAttack_TimeElapsed()
 void AActCharacter::DashProjectile()
 {
 	PlayAnimMontage(AttackAnim);
+	PrepareAttack();
 
 	//for now it's actually the same animation
 	GetWorldTimerManager().SetTimer(TimerHandle_DashProjectile, this, &AActCharacter::DashProjectile_TimeElapsed, 0.2f);
@@ -155,7 +168,7 @@ void AActCharacter::DashProjectile_TimeElapsed()
 
 void AActCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
