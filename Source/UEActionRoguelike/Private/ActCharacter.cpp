@@ -38,7 +38,9 @@ AActCharacter::AActCharacter()
 	L_CharacterMovement->JumpZVelocity = 800;
 	L_CharacterMovement->GravityScale = 8;
 	L_CharacterMovement->bApplyGravityWhileJumping = true;
-	
+
+	ImpactShakeInnerRadius = 250.0f;
+	ImpactShakeOuterRadius = 2500.0f;
 }
 
 void AActCharacter::PostInitializeComponents()
@@ -118,8 +120,11 @@ void AActCharacter::MoveRight(float Value)
 
 void AActCharacter::PrepareAttack()
 {
+	PlayAnimMontage(AttackAnim);
+	
 	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName,
 		FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
+	
 	FRotator ActorRotation = GetActorRotation();
 	FRotator ControllerRotation = GetControlRotation();
 	ActorRotation.Yaw = ControllerRotation.Yaw;
@@ -128,7 +133,6 @@ void AActCharacter::PrepareAttack()
 
 void AActCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
 	PrepareAttack();
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AActCharacter::PrimaryAttack_TimeElapsed, 0.2f);
 }
@@ -140,7 +144,6 @@ void AActCharacter::PrimaryAttack_TimeElapsed()
 
 void AActCharacter::SecondaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
 	PrepareAttack();
 
 	//for now it's actually the same animation
@@ -154,7 +157,6 @@ void AActCharacter::SecondaryAttack_TimeElapsed()
 
 void AActCharacter::DashProjectile()
 {
-	PlayAnimMontage(AttackAnim);
 	PrepareAttack();
 
 	//for now it's actually the same animation
@@ -168,6 +170,8 @@ void AActCharacter::DashProjectile_TimeElapsed()
 
 void AActCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(),ShootingShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);
+	
 	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 	
 	FActorSpawnParameters SpawnParams;
@@ -237,6 +241,8 @@ void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeCompon
 {
 	if(Delta < 0.0f)
 	{
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(),ImpactShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);
+		
 		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashSpeedParamName, HitFlashSpeed);
 		GetMesh()->SetVectorParameterValueOnMaterials(HitFlashColorParamName, FVector(HitFlashColor.R, HitFlashColor.G, HitFlashColor.B));
