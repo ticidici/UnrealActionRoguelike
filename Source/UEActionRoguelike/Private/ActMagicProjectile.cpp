@@ -16,6 +16,8 @@ AActMagicProjectile::AActMagicProjectile()
 	SphereComp->SetCollisionProfileName("Projectile");
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActMagicProjectile::OnActorOverlap);
 	
+	DamageAmount = 200;
+	
 	MovementComp->InitialSpeed = 1000.0f;
 }
 
@@ -33,7 +35,9 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(OtherActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
 		if(AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-abs(DamageAmount));
+			int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
+
+			AttributeComp->ApplyHealthChange(-abs(DamageAmount + RandomDamage));
 		}
 		Explode();
 	}

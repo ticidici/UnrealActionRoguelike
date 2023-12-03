@@ -6,7 +6,7 @@
 // Sets default values for this component's properties
 UActAttributeComponent::UActAttributeComponent()
 {
-	MaxHealth = 120;
+	MaxHealth = 999;
 	Health = MaxHealth;
 }
 
@@ -17,11 +17,17 @@ bool UActAttributeComponent::IsAlive() const
 
 bool UActAttributeComponent::ApplyHealthChange(float Delta)
 {
+	float OldHealth = Health;
+	
 	Health += Delta;
 
 	Health = FMath::Clamp(Health, 0, MaxHealth);
+
+	float ActualDelta = Health - OldHealth;
+
+	//float RandomDamage = FMath::Floor(FMath::RandRange(1.0, 100.0));
 	
 	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 	
-	return true;//for now
+	return ActualDelta != 0;
 }
