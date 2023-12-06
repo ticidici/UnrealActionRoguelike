@@ -28,13 +28,13 @@ protected:
 	TSubclassOf<AActor> DashProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
+	TObjectPtr<UAnimMontage> AttackAnim;
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
 	FTimerHandle TimerHandle_DashProjectile;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	UParticleSystem* CastingEffect;
+	TObjectPtr<UParticleSystem> CastingEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
 	TSubclassOf<UCameraShakeBase> ImpactShake;
@@ -63,7 +63,7 @@ protected:
 	FColor HitFlashColor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UActAttributeComponent* AttributeComp;
+	TObjectPtr<UActAttributeComponent> AttributeComp;
 
 public:
 	// Sets default values for this character's properties
@@ -74,13 +74,13 @@ protected:
 	bool WantsToStopJump = false;
 
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
+	TObjectPtr<USpringArmComponent> SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComp;
+	TObjectPtr<UCameraComponent> CameraComp;
 
 	UPROPERTY(VisibleAnywhere)
-	UActInteractionComponent* InteractComp;
+	TObjectPtr<UActInteractionComponent> InteractComp;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
