@@ -5,6 +5,7 @@
 
 #include "ActAttributeComponent.h"
 #include "AIController.h"
+#include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -45,7 +46,19 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 		GetMesh()->SetVectorParameterValueOnMaterials(HitFlashColorParamName, FVector(HitFlashColor.R, HitFlashColor.G, HitFlashColor.B));
 		if(NewHealth <= 0.0f)
 		{
-			//TODO DEATH
+			//stop bt
+			AAIController* AIC = Cast<AAIController>(GetController());
+			if(AIC)
+			{
+				AIC->GetBrainComponent()->StopLogic("Killed");
+			}
+			
+			//ragdoll
+			GetMesh()->SetAllBodiesSimulatePhysics(true);
+			GetMesh()->SetCollisionProfileName("Ragdoll");
+			
+			//set lifespan
+			SetLifeSpan(10.0f);
 		}
 	}
 }
