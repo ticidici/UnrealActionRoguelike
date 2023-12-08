@@ -19,20 +19,22 @@ public:
 protected:
 
 	virtual void PostInitializeComponents() override;
+
+	void SetTargetActor(AActor* NewTarget);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UPawnSensingComponent* PawnSensingComponent;
+	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UActAttributeComponent* AttributeComp;
+	TObjectPtr<UActAttributeComponent> AttributeComp;
 
 
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
-	FName HitFlashTimeParamName = TEXT("HitFlashTime");
+	FName HitFlashTimeParamName;
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
-	FName HitFlashSpeedParamName = TEXT("HitFlashSpeed");
+	FName HitFlashSpeedParamName;
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
-	FName HitFlashColorParamName = TEXT("HitFlashColor");
+	FName HitFlashColorParamName;
 	
 	UPROPERTY(EditAnywhere, Category = "Receive Hit")
 	float HitFlashSpeed;

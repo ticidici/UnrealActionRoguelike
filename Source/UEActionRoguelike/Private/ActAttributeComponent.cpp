@@ -3,6 +3,7 @@
 
 #include "ActAttributeComponent.h"
 
+
 // Sets default values for this component's properties
 UActAttributeComponent::UActAttributeComponent()
 {
@@ -25,7 +26,7 @@ float UActAttributeComponent::GetHealthMax()
 	return MaxHealth;
 }
 
-bool UActAttributeComponent::ApplyHealthChange(float Delta)
+bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	float OldHealth = Health;
 	
@@ -37,7 +38,29 @@ bool UActAttributeComponent::ApplyHealthChange(float Delta)
 
 	//float RandomDamage = FMath::Floor(FMath::RandRange(1.0, 100.0));
 	
-	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 	
 	return ActualDelta != 0;
+}
+
+UActAttributeComponent* UActAttributeComponent::GetAttributes(AActor* FromActor)
+{
+	if(FromActor)
+	{
+		return FromActor->FindComponentByClass<UActAttributeComponent>();
+		//return Cast<UActAttributeComponent>(FromActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
+	}
+
+	return nullptr;
+}
+
+bool UActAttributeComponent::IsActorAlive(AActor* Actor)
+{
+	auto AttributeComp = GetAttributes(Actor);
+	if(AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+
+	return false;
 }

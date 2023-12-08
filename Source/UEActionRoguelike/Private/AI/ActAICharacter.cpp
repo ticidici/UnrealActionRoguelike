@@ -14,6 +14,10 @@ AActAICharacter::AActAICharacter()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	AttributeComp = CreateDefaultSubobject<UActAttributeComponent>("AttributeComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	HitFlashTimeParamName = TEXT("TimeToHit");
+	HitFlashSpeedParamName = TEXT("HitFlashSpeed");
+	HitFlashColorParamName = TEXT("HitFlashColor");
 }
 
 void AActAICharacter::PostInitializeComponents()
@@ -23,17 +27,19 @@ void AActAICharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &AActAICharacter::OnHealthChanged);
 }
 
-void AActAICharacter::OnPawnSeen(APawn* Pawn)
+void AActAICharacter::SetTargetActor(AActor* NewTarget)
 {
-	AAIController* AIC = Cast<AAIController>(GetController());
+	AAIController* AIC = GetController<AAIController>();
 	if(AIC)
 	{
-		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
-
-		BBComp->SetValueAsObject("TargetActor", Pawn);
-
-		DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
 	}
+}
+
+void AActAICharacter::OnPawnSeen(APawn* Pawn)
+{
+	SetTargetActor(Pawn);
+	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
 
 void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
@@ -41,6 +47,11 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 {
 	if(Delta < 0.0f)
 	{
+		if(InstigatorActor != this)
+		{
+			SetTargetActor(InstigatorActor);
+		}
+
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParamName, GetWorld()->TimeSeconds);
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashSpeedParamName, HitFlashSpeed);
 		GetMesh()->SetVectorParameterValueOnMaterials(HitFlashColorParamName, FVector(HitFlashColor.R, HitFlashColor.G, HitFlashColor.B));

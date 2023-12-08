@@ -28,7 +28,7 @@ void AActPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 			//hide short time just to give some kind of feedback
 			HideAndCooldownPowerup(1.0f);
 		}
-		else if(AttributeComp->ApplyHealthChange(AttributeComp->GetHealthMax()))
+		else if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax()))
 		{
 			HideAndCooldownPowerup(RespawnTime);
 		}

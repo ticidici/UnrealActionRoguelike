@@ -37,7 +37,7 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		{
 			int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
 
-			AttributeComp->ApplyHealthChange(-abs(DamageAmount + RandomDamage));
+			AttributeComp->ApplyHealthChange(GetInstigator(), -abs(DamageAmount + RandomDamage));
 		}
 		Explode();
 	}

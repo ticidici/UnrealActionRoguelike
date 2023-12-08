@@ -14,8 +14,14 @@ class UEACTIONROGUELIKE_API UActAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static UActAttributeComponent* GetAttributes(AActor* FromActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName))
+	static bool IsActorAlive(AActor* Actor);
+	
 	UActAttributeComponent();
 
 protected:
@@ -36,6 +42,6 @@ public:
 	FOnHealthChanged OnHealthChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	bool ApplyHealthChange(float Delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
 };
