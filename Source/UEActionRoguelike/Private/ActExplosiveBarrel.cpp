@@ -3,6 +3,7 @@
 
 #include "ActExplosiveBarrel.h"
 
+#include "ActProjectileBase.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Logging/StructuredLog.h"
@@ -35,7 +36,8 @@ AActExplosiveBarrel::AActExplosiveBarrel()
 void AActExplosiveBarrel::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	MeshComp->OnComponentHit.AddDynamic(this, &AActExplosiveBarrel::OnActorHit);
+	//MeshComp->OnComponentHit.AddDynamic(this, &AActExplosiveBarrel::OnActorHit);
+	MeshComp->OnComponentBeginOverlap.AddDynamic(this, &AActExplosiveBarrel::OnActorOverlap);
 }
 
 void AActExplosiveBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -58,3 +60,14 @@ void AActExplosiveBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* 
 	//	}
 	//}
 }
+
+void AActExplosiveBarrel::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(Cast<AActProjectileBase>(OtherActor))
+	{
+		RadialForceComp->FireImpulse();
+	}
+}
+
+

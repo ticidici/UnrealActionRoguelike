@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActWorldUserWidget.h"
 #include "GameFramework/Character.h"
 #include "ActAICharacter.generated.h"
 
 class UPawnSensingComponent;
+class UUserWidget;
+class UActWorldUserWidget;
 
 UCLASS()
 class UEACTIONROGUELIKE_API AActAICharacter : public ACharacter
@@ -28,7 +31,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UActAttributeComponent> AttributeComp;
 
-
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+	
+	TObjectPtr<UActWorldUserWidget> ActiveHealthBar;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName HitFlashTimeParamName;
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
@@ -41,7 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Receive Hit")
 	FColor HitFlashColor;
 
-	
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 
