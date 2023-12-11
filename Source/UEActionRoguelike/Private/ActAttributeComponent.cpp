@@ -3,12 +3,19 @@
 
 #include "ActAttributeComponent.h"
 
+#include "Logging/StructuredLog.h"
+
 
 // Sets default values for this component's properties
 UActAttributeComponent::UActAttributeComponent()
 {
 	MaxHealth = 999;
 	Health = MaxHealth;
+}
+
+bool UActAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
 bool UActAttributeComponent::IsAlive() const
@@ -28,6 +35,12 @@ float UActAttributeComponent::GetHealthMax()
 
 bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+	if(!GetOwner()->CanBeDamaged())//found looking at cheat manager
+	{
+		UE_LOGFMT(LogTemp, Warning, "Can't be damaged!");
+		return false;
+	}
+	
 	float OldHealth = Health;
 	
 	Health += Delta;

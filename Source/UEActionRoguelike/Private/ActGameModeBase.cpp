@@ -23,6 +23,18 @@ void AActGameModeBase::StartPlay()
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AActGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
 }
 
+void AActGameModeBase::KillAll()
+{
+	for(AActAICharacter* Bot : TActorRange<AActAICharacter>(GetWorld()))
+	{
+		UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(Bot);
+		if(AttributeComp && AttributeComp->IsAlive())
+		{
+			AttributeComp->Kill(this);//@fixme: pass in player? for kill credit
+		}
+	}
+}
+
 void AActGameModeBase::SpawnBotTimerElapsed()
 {
 	int32 NumberOfAliveBots = 0;
