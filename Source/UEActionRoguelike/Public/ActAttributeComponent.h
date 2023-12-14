@@ -30,6 +30,8 @@ protected:
 	float MaxHealth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health;
+	UPROPERTY(EditDefaultsOnly, meta = (UIMin = 1, UIMax = 100))
+	float PercentageConsideredLowHealth;
 
 public:
 
@@ -39,7 +41,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 	bool isFullHealth();
+	bool isLowHealth();
 	float GetHealthMax();
+
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;

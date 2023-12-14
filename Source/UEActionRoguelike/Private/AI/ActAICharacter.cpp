@@ -46,6 +46,23 @@ void AActAICharacter::OnPawnSeen(APawn* Pawn)
 void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
 	float Delta)
 {
+	if(AttributeComp->isLowHealth())
+	{
+		AAIController* AIC = Cast<AAIController>(GetController());
+		if(AIC)
+		{
+			AIC->GetBlackboardComponent()->SetValueAsBool("IsLowHealth", true);
+		}
+	}
+	else
+	{
+		AAIController* AIC = Cast<AAIController>(GetController());
+		if(AIC)
+		{
+			AIC->GetBlackboardComponent()->SetValueAsBool("IsLowHealth", false);
+		}
+	}
+	
 	if(Delta < 0.0f)
 	{
 		if(InstigatorActor != this)
@@ -53,7 +70,7 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 			SetTargetActor(InstigatorActor);
 		}
 
-		if(ActiveHealthBar == nullptr)
+		if(Delta > -AttributeComp->GetHealthMax() && ActiveHealthBar == nullptr)
 		{
 			ActiveHealthBar = CreateWidget<UActWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
 			if(ActiveHealthBar)
@@ -62,6 +79,7 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 				ActiveHealthBar->AddToViewport();
 			}
 		}
+
 		
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParamName, GetWorld()->TimeSeconds);
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashSpeedParamName, HitFlashSpeed);

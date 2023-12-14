@@ -11,6 +11,7 @@ UActAttributeComponent::UActAttributeComponent()
 {
 	MaxHealth = 999;
 	Health = MaxHealth;
+	PercentageConsideredLowHealth = 25.0f;
 }
 
 bool UActAttributeComponent::Kill(AActor* InstigatorActor)
@@ -28,6 +29,11 @@ bool UActAttributeComponent::isFullHealth()
 	return Health >= MaxHealth;
 }
 
+bool UActAttributeComponent::isLowHealth()
+{
+	return Health <= MaxHealth * PercentageConsideredLowHealth * 0.01f;
+}
+
 float UActAttributeComponent::GetHealthMax()
 {
 	return MaxHealth;
@@ -35,7 +41,7 @@ float UActAttributeComponent::GetHealthMax()
 
 bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	if(!GetOwner()->CanBeDamaged())//found looking at cheat manager
+	if(Delta < 0 && !GetOwner()->CanBeDamaged())//found looking at cheat manager
 	{
 		UE_LOGFMT(LogTemp, Warning, "Can't be damaged!");
 		return false;
