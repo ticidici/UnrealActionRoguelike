@@ -46,23 +46,6 @@ void AActAICharacter::OnPawnSeen(APawn* Pawn)
 void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
 	float Delta)
 {
-	if(AttributeComp->isLowHealth())
-	{
-		AAIController* AIC = Cast<AAIController>(GetController());
-		if(AIC)
-		{
-			AIC->GetBlackboardComponent()->SetValueAsBool("IsLowHealth", true);
-		}
-	}
-	else
-	{
-		AAIController* AIC = Cast<AAIController>(GetController());
-		if(AIC)
-		{
-			AIC->GetBlackboardComponent()->SetValueAsBool("IsLowHealth", false);
-		}
-	}
-	
 	if(Delta < 0.0f)
 	{
 		if(InstigatorActor != this)
