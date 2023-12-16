@@ -3,8 +3,10 @@
 
 #include "AI/ActAIController.h"
 
+#include "AI/ActAICharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Logging/StructuredLog.h"
 
 void AActAIController::BeginPlay()
 {
@@ -14,7 +16,7 @@ void AActAIController::BeginPlay()
 	{
 		RunBehaviorTree(BehaviorTree);
 	}
-
+	
 	/// we remove this to use a sensing component instead 
 	// APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	// if(MyPawn)

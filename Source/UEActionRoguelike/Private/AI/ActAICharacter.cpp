@@ -7,6 +7,7 @@
 #include "ActWorldUserWidget.h"
 #include "AIController.h"
 #include "BrainComponent.h"
+#include "AI/ActAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -19,6 +20,7 @@ AActAICharacter::AActAICharacter()
 	HitFlashTimeParamName = TEXT("TimeToHit");
 	HitFlashSpeedParamName = TEXT("HitFlashSpeed");
 	HitFlashColorParamName = TEXT("HitFlashColor");
+
 }
 
 void AActAICharacter::PostInitializeComponents()
@@ -26,6 +28,21 @@ void AActAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &AActAICharacter::OnPawnSeen);
 	AttributeComp->OnHealthChanged.AddDynamic(this, &AActAICharacter::OnHealthChanged);
+}
+
+void AActAICharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	AAIController* AIC = GetController<AAIController>();
+	if(AIC)
+	{
+		AIC->GetBlackboardComponent()->SetValueAsBool("CanHealSelf", bCanHealSelf);
+	}
+}
+
+bool AActAICharacter::CanHealSelf() const
+{
+	return bCanHealSelf;
 }
 
 void AActAICharacter::SetTargetActor(AActor* NewTarget)

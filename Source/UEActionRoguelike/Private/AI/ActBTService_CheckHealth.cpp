@@ -19,6 +19,7 @@ void UActBTService_CheckHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		{
 			UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 			BlackboardComp->SetValueAsBool(LowHealthKey.SelectedKeyName, AttributeComp->isLowHealth());
+			BlackboardComp->SetValueAsObject(ActorToHealKey.SelectedKeyName, AIPawn);
 		}
 	}
 }

@@ -5,6 +5,7 @@
 
 #include "ActAttributeComponent.h"
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 
 UActBTTask_Heal::UActBTTask_Heal()
@@ -23,13 +24,13 @@ EBTNodeResult::Type UActBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 			return EBTNodeResult::Failed;
 		}
 
-		AActor* ActorToHeal = MyCharacter;
+		AActor* ActorToHeal = Cast<AActor>(MyController->GetBlackboardComponent()->GetValueAsObject("ActorToHeal"));
 		if(ActorToHeal == nullptr)
 		{
 			return EBTNodeResult::Failed;
 		}
 
-		UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(MyCharacter);
+		UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(ActorToHeal);
 
 		if(AttributeComp == nullptr)
 		{

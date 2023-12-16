@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FBlackboardKeySelector LowHealthKey;
 	
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FBlackboardKeySelector ActorToHealKey;
+	
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	
 };

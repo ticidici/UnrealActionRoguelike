@@ -19,11 +19,18 @@ class UEACTIONROGUELIKE_API AActAICharacter : public ACharacter
 public:
 	AActAICharacter();
 
+	bool CanHealSelf() const;
+	
 protected:
 
 	virtual void PostInitializeComponents() override;
 
+	virtual void BeginPlay() override;
+	
 	void SetTargetActor(AActor* NewTarget);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Minion Type")
+	bool bCanHealSelf;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
