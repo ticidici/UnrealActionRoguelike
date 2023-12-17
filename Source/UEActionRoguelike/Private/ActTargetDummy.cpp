@@ -15,7 +15,7 @@ AActTargetDummy::AActTargetDummy()
 
 
 void AActTargetDummy::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-	float Delta)
+	float Delta, float ActualDelta)
 {
 	//we use this for damage, not healing
 	if(Delta < 0.0f)

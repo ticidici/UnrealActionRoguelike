@@ -7,7 +7,7 @@
 #include "ActAttributeComponent.generated.h"
 
 //class keyword is an inline forward declaration
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, class UActAttributeComponent*, OwningComp, float, NewHealth, float, Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnHealthChanged, AActor*, InstigatorActor, class UActAttributeComponent*, OwningComp, float, NewHealth, float, Delta, float, ActualDelta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UEACTIONROGUELIKE_API UActAttributeComponent : public UActorComponent

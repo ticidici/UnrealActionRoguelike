@@ -4,8 +4,10 @@
 #include "ActMagicProjectile.h"
 
 #include "ActAttributeComponent.h"
+#include "ActGameplayFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 AActMagicProjectile::AActMagicProjectile()
@@ -32,12 +34,19 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 {
 	if(OtherActor && OtherActor != GetInstigator())
 	{
-		UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(OtherActor->GetComponentByClass(UActAttributeComponent::StaticClass()));
-		if(AttributeComp)
-		{
-			int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
+		// UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(OtherActor);
+		// if(AttributeComp)
+		// {
+		// 	int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
+		//
+		// 	AttributeComp->ApplyHealthChange(GetInstigator(), -abs(DamageAmount + RandomDamage));
+		// }
+		// Explode();
 
-			AttributeComp->ApplyHealthChange(GetInstigator(), -abs(DamageAmount + RandomDamage));
+		int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
+		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), SweepResult))
+		{
+			UE_LOGFMT(LogTemp, Log,"Could not damage actor with magic projectile. Probably dead already.");
 		}
 		Explode();
 	}

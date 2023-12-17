@@ -242,7 +242,7 @@ void AActCharacter::PrimaryInteract()
 }
 
 void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-	float Delta)
+	float Delta, float ActualDelta)
 {
 	if(Delta < 0.0f)
 	{

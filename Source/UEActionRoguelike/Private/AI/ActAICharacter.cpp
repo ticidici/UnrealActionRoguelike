@@ -9,6 +9,7 @@
 #include "BrainComponent.h"
 #include "AI/ActAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 AActAICharacter::AActAICharacter()
@@ -17,6 +18,9 @@ AActAICharacter::AActAICharacter()
 	AttributeComp = CreateDefaultSubobject<UActAttributeComponent>("AttributeComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
+	
 	HitFlashTimeParamName = TEXT("TimeToHit");
 	HitFlashSpeedParamName = TEXT("HitFlashSpeed");
 	HitFlashColorParamName = TEXT("HitFlashColor");
@@ -61,9 +65,9 @@ void AActAICharacter::OnPawnSeen(APawn* Pawn)
 }
 
 void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-	float Delta)
+	float Delta, float ActualDelta)
 {
-	if(Delta < 0.0f)
+	if(ActualDelta < 0.0f)
 	{
 		if(InstigatorActor != this)
 		{
@@ -79,7 +83,6 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 				ActiveHealthBar->AddToViewport();
 			}
 		}
-
 		
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParamName, GetWorld()->TimeSeconds);
 		GetMesh()->SetScalarParameterValueOnMaterials(HitFlashSpeedParamName, HitFlashSpeed);
@@ -101,4 +104,10 @@ void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComp
 			SetLifeSpan(10.0f);
 		}
 	}
+	else if(!AttributeComp->IsAlive())
+	{
+		//we reset lifespan to be able to keep hitting on the corpse, it only despawns when we leave it alone
+		SetLifeSpan(10.0f);
+	}
+
 }
