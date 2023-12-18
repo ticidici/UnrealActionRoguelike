@@ -19,6 +19,7 @@ AActMagicProjectile::AActMagicProjectile()
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AActMagicProjectile::OnActorOverlap);
 	
 	DamageAmount = 200;
+	Knockback = 5000;
 	
 	MovementComp->InitialSpeed = 1000.0f;
 }
@@ -44,7 +45,15 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		// Explode();
 
 		int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
-		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), SweepResult))
+
+		//custom knockback impulse
+		FHitResult ModifiedHitResult = SweepResult;
+		ModifiedHitResult.ImpactNormal *= -2.f;//we give more contribution to real normal
+		ModifiedHitResult.ImpactNormal += FVector_NetQuantizeNormal::UpVector;
+		ModifiedHitResult.ImpactNormal.Normalize();
+		ModifiedHitResult.ImpactNormal *= Knockback;
+		
+		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), ModifiedHitResult, false))
 		{
 			UE_LOGFMT(LogTemp, Log,"Could not damage actor with magic projectile. Probably dead already.");
 		}

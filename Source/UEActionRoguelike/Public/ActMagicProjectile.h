@@ -21,7 +21,9 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere)
-	float DamageAmount;
+	float DamageAmount;//Positive
+	UPROPERTY(EditAnywhere)
+	float Knockback;
 	
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -81,9 +81,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UActInteractionComponent> InteractComp;
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -105,6 +102,8 @@ protected:
 	void OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta, float ActualDelta);
 
 	virtual void PostInitializeComponents() override;
+
+	virtual FVector GetPawnViewLocation() const override;
 	
 public:	
 	// Called every frame

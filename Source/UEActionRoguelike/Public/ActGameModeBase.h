@@ -11,9 +11,9 @@ class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 class UCurveFloat;
 
-/**
- * 
- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerRespawned, class AActCharacter*, NewCharacter);
+
 UCLASS()
 class UEACTIONROGUELIKE_API AActGameModeBase : public AGameModeBase
 {
@@ -48,6 +48,9 @@ public:
 
 	AActGameModeBase();
 
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerRespawned OnPlayerRespawned;
+	
 	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
 	
 	virtual void StartPlay() override;

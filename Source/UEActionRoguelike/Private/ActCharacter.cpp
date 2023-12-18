@@ -49,10 +49,9 @@ void AActCharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &AActCharacter::OnHealthChanged);
 }
 
-// Called when the game starts or when spawned
-void AActCharacter::BeginPlay()
+FVector AActCharacter::GetPawnViewLocation() const
 {
-	Super::BeginPlay();
+	return CameraComp->GetComponentLocation();
 }
 
 // Called every frame

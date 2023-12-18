@@ -107,6 +107,9 @@ void AActGameModeBase::RespawnPlayerElapsed(AController* Controller)
 		Controller->UnPossess();
 
 		RestartPlayer(Controller);
+
+		AActCharacter* NewCharacterPossessed = Cast<AActCharacter>(Controller->GetCharacter());
+		OnPlayerRespawned.Broadcast(NewCharacterPossessed);
 	}
 }
 
