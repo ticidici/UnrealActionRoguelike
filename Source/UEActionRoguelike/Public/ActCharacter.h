@@ -10,6 +10,7 @@ class UActInteractionComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UActAttributeComponent;
+class UActActionComponent;
 
 UCLASS()
 class UEACTIONROGUELIKE_API AActCharacter : public ACharacter
@@ -64,6 +65,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UActAttributeComponent> AttributeComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UActActionComponent> ActionComp;
 
 public:
 	// Sets default values for this character's properties
@@ -93,6 +97,8 @@ protected:
 	void Jump();
 	void StopJump();
 	void PrimaryInteract();
+	void SprintStart();
+	void SprintStop();
 
 	void PrepareAttack();
 	

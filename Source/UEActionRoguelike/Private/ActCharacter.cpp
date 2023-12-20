@@ -3,6 +3,7 @@
 
 #include "ActCharacter.h"
 
+#include "ActActionComponent.h"
 #include "ActAttributeComponent.h"
 #include "ActInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -27,6 +28,7 @@ AActCharacter::AActCharacter()
 	InteractComp = CreateDefaultSubobject<UActInteractionComponent>("InteractComponent");
 
 	AttributeComp = CreateDefaultSubobject<UActAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<UActActionComponent>("ActionComp");
 
     UCharacterMovementComponent* const L_CharacterMovement = GetCharacterMovement();
 	L_CharacterMovement->bOrientRotationToMovement = true;
@@ -93,6 +95,9 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AActCharacter::StopJump);
 	
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AActCharacter::PrimaryInteract);
+
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AActCharacter::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AActCharacter::SprintStop);
 }
 
 void AActCharacter::HealSelf(float Amount)
@@ -240,8 +245,18 @@ void AActCharacter::PrimaryInteract()
 	}
 }
 
+void AActCharacter::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void AActCharacter::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
+}
+
 void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-	float Delta, float ActualDelta)
+                                    float Delta, float ActualDelta)
 {
 	if(Delta < 0.0f)
 	{
