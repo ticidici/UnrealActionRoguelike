@@ -17,15 +17,20 @@ bool UActGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* Targ
 
 //Pass a modified Hit Result (impact normal) if we want a custom impulse
 bool UActGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount,
-	const FHitResult& HitResult, bool bDefaultImpulse)
+	const FHitResult& HitResult, FVector CustomImpulse, bool bDefaultImpulse)
 {
 	bool Result = ApplyDamage(DamageCauser, TargetActor, DamageAmount);
 	//if we don't put the impulse inside the if it moves even in death
 	UPrimitiveComponent* HitComp = HitResult.GetComponent();
 	if(HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))
 	{
-		FVector_NetQuantizeNormal Impulse = HitResult.ImpactNormal;
-		if(bDefaultImpulse) Impulse = -HitResult.ImpactNormal * 5000.f;//default impulse gets the normal and turns it around
+		FVector Impulse = CustomImpulse;
+		if(bDefaultImpulse)
+		{
+			Impulse = HitResult.TraceEnd - HitResult.TraceStart;
+			Impulse.Normalize();
+			Impulse *= 5000.f;
+		}
 		
 		HitComp->AddImpulseAtLocation(Impulse, HitResult.ImpactPoint, HitResult.BoneName);
 	}

@@ -47,13 +47,16 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		int RandomDamage = FMath::Floor(FMath::RandRange(-100, 100));
 
 		//custom knockback impulse
-		FHitResult ModifiedHitResult = SweepResult;
-		ModifiedHitResult.ImpactNormal *= -2.f;//we give more contribution to real normal
-		ModifiedHitResult.ImpactNormal += FVector_NetQuantizeNormal::UpVector;
-		ModifiedHitResult.ImpactNormal.Normalize();
-		ModifiedHitResult.ImpactNormal *= Knockback;
+		FVector CustomImpulse = SweepResult.TraceEnd - SweepResult.TraceStart;
+		CustomImpulse.Normalize();
+		CustomImpulse *= 2.f;//we give more contribution to real direction
+		CustomImpulse += FVector_NetQuantizeNormal::UpVector;
+		CustomImpulse.Normalize();
+		CustomImpulse *= Knockback;
 		
-		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), ModifiedHitResult, false))
+		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(
+			GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), SweepResult, CustomImpulse, false
+			))
 		{
 			UE_LOGFMT(LogTemp, Log,"Could not damage actor with magic projectile. Probably dead already.");
 		}

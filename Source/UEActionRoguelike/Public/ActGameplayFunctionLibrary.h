@@ -20,6 +20,6 @@ public:
 	static bool ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	static bool ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, const FHitResult& HitResult, bool bDefaultImpulse = true);
+	static bool ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, const FHitResult& HitResult, FVector CustomImpulse, bool bDefaultImpulse = true);
 	
 };
