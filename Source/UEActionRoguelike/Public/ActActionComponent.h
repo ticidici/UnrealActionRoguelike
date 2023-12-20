@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActAction.h"
 #include "Components/ActorComponent.h"
 #include "ActActionComponent.generated.h"
 
@@ -27,6 +28,10 @@ public:
 	
 protected:
 
+	// Granted abilities at game start
+	UPROPERTY(EditAnywhere, Category = "Actions")
+	TArray<TSubclassOf<UActAction>> DefaultActions;
+	
 	UPROPERTY()
 	TArray<UActAction*> Actions;
 

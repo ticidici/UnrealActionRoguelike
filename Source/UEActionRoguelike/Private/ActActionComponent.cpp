@@ -13,6 +13,10 @@ UActActionComponent::UActActionComponent()
 void UActActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	for (TSubclassOf<UActAction> ActionClass : DefaultActions)
+	{
+		AddAction(ActionClass);
+	}
 }
 
 

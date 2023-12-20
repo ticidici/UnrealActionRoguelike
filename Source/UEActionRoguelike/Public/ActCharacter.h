@@ -17,30 +17,14 @@ class UEACTIONROGUELIKE_API AActCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	// Sets default values for this character's properties
+	AActCharacter();
+	
 protected:
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> MagicProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> BlackHoleProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> DashProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TObjectPtr<UAnimMontage> AttackAnim;
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-	FTimerHandle TimerHandle_DashProjectile;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TObjectPtr<UParticleSystem> CastingEffect;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
 	TSubclassOf<UCameraShakeBase> ImpactShake;
-	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
-	TSubclassOf<UCameraShakeBase> ShootingShake;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects|Shake")
 	float ImpactShakeInnerRadius;
@@ -54,9 +38,6 @@ protected:
 	FName HitFlashSpeedParamName = TEXT("HitFlashSpeed");
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName HitFlashColorParamName = TEXT("HitFlashColor");
-
-	UPROPERTY(VisibleAnywhere, Category = "Effects")
-	FName HandSocketName = TEXT("Muzzle_01");
 	
 	UPROPERTY(EditAnywhere, Category = "Receive Hit")
 	float HitFlashSpeed;
@@ -69,12 +50,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UActActionComponent> ActionComp;
 
-public:
-	// Sets default values for this character's properties
-	AActCharacter();
 	
-protected:
-
 	bool WantsToStopJump = false;
 
 	UPROPERTY(VisibleAnywhere)
@@ -89,29 +65,23 @@ protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void PrimaryAttack();
-	void PrimaryAttack_TimeElapsed();
 	void SecondaryAttack();
-	void SecondaryAttack_TimeElapsed();
 	void DashProjectile();
-	void DashProjectile_TimeElapsed();
 	void Jump();
 	void StopJump();
 	void PrimaryInteract();
 	void SprintStart();
 	void SprintStop();
 
-	void PrepareAttack();
-	
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
-
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta, float ActualDelta);
 
 	virtual void PostInitializeComponents() override;
-
+	
+public:
+	
 	virtual FVector GetPawnViewLocation() const override;
 	
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
