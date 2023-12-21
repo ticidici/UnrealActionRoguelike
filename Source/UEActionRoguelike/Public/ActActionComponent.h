@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ActAction.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "ActActionComponent.generated.h"
 
@@ -15,8 +16,13 @@ class UEACTIONROGUELIKE_API UActActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	UActActionComponent();
 
+	UActActionComponent();
+	
+	//it needs include instead of forward declaration because it is a struct, not a pointer, needs to know the size
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer ActiveGameplayTags;
+	
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	void AddAction(TSubclassOf<UActAction> ActionClass);
 
@@ -37,7 +43,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
-public:	
+public:
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		

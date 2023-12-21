@@ -4,6 +4,8 @@
 #include "ActActionComponent.h"
 
 #include "ActAction.h"
+#include "Logging/StructuredLog.h"
+
 
 UActActionComponent::UActActionComponent()
 {
@@ -23,7 +25,10 @@ void UActActionComponent::BeginPlay()
 void UActActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, DebugMsg);
 }
+
 
 void UActActionComponent::AddAction(TSubclassOf<UActAction> ActionClass)
 {
