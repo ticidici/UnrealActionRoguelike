@@ -30,9 +30,17 @@ protected:
 	//Action can only start if OwningActor has none of these tags applied
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
+
+	bool bIsRunnning;
 	
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool IsRunning() const;
+	
+	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	bool CanStart(AActor* Instigator);
+	
 	//BlueprintNativeEvent has a c++ implementation but can be overriden in blueprints
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StartAction(AActor* Instigator);
