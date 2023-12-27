@@ -4,6 +4,7 @@
 #include "ActGameplayFunctionLibrary.h"
 
 #include "ActAttributeComponent.h"
+#include "Blueprint/UserWidget.h"
 
 bool UActGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount)
 {

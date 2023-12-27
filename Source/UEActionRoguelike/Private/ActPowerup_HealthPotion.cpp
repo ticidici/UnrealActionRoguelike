@@ -4,6 +4,7 @@
 #include "ActPowerup_HealthPotion.h"
 
 #include "ActAttributeComponent.h"
+#include "ActPlayerState.h"
 
 AActPowerup_HealthPotion::AActPowerup_HealthPotion()
 {
@@ -20,17 +21,25 @@ void AActPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 	
-	UActAttributeComponent* AttributeComp = Cast<UActAttributeComponent>(InstigatorPawn->GetComponentByClass(UActAttributeComponent::StaticClass()));
+	UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(InstigatorPawn);
 	if(ensure(AttributeComp))
 	{
-		if(AttributeComp->isFullHealth())
+		//if full health or not enough credits
+		AActPlayerState* PlayerState = AActPlayerState::GetActPlayerState(Cast<APlayerController>(InstigatorPawn->GetController()));
+
+		if(AttributeComp->isFullHealth() || (PlayerState && PlayerState->GetCredits() < CreditsPrice))
 		{
 			//hide short time just to give some kind of feedback
 			HideAndCooldownPowerup(1.0f);
 		}
 		else if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax()))
 		{
+			//if there is no player state, healing is free (an enemy, for example)
 			HideAndCooldownPowerup(RespawnTime);
+			if(PlayerState)
+			{
+				PlayerState->VaryCredits(-CreditsPrice);
+			}
 		}
 	}
 }

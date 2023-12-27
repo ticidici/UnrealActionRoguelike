@@ -63,7 +63,8 @@ void UActAction_ProjectileAttack::AttackDelay_Elapsed(AActCharacter* InstigatorC
 		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
 		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 
-		FVector TraceStart = InstigatorCharacter->GetPawnViewLocation();
+		//start cast a bit front of the camera
+		FVector TraceStart = InstigatorCharacter->GetPawnViewLocation() + (InstigatorCharacter->GetControlRotation().Vector() * 20);
 
 		//endpoint far into the look-at distance
 		FVector TraceEnd = TraceStart + (InstigatorCharacter->GetControlRotation().Vector() * 5000);//assumes crosshair in center

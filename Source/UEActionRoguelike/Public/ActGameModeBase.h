@@ -21,6 +21,7 @@ class UEACTIONROGUELIKE_API AActGameModeBase : public AGameModeBase
 
 protected:
 
+	//------ SPAWN MINIONS PERIODICALLY ------
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<AActor> MinionClass;
 	
@@ -39,11 +40,43 @@ protected:
 	void SpawnBotTimerElapsed();
 
 	UFUNCTION()
-	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	void OnFindBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	//------ /SPAWN MINIONS PERIODICALLY ------
+
+
+	//------ SPAWN INITIAL ITEMS ------
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Items")
+	TSubclassOf<AActor> PotionClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Items")
+	TSubclassOf<AActor> CoinClass;
+
+	UPROPERTY(EditAnywhere)
+	int32 NumberOfPotionsToSpawn;
+	UPROPERTY(EditAnywhere)
+	int32 NumberOfCoinsToSpawn;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Items")
+	TObjectPtr<UEnvQuery> SpawnItemsQuery;
+
+	FTimerHandle TimerHandle_SpawnInitialItems;
 
 	UFUNCTION()
-	void RespawnPlayerElapsed(AController* Controller);
+	void SpawnInitialItemsTimerElapsed();
+
+	UFUNCTION()
+	void OnFindItemsSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 	
+	UFUNCTION()
+	void SpawnItems();
+	
+	//------ /SPAWN INITIAL ITEMS ------
+	
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+
 public:
 
 	AActGameModeBase();
@@ -54,7 +87,7 @@ public:
 	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
 	
 	virtual void StartPlay() override;
-
+	
 	UFUNCTION(Exec)
 	void KillAll();
 	

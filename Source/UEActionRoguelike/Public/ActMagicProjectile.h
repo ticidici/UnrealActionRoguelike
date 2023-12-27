@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ActProjectileBase.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "ActMagicProjectile.generated.h"
 
@@ -20,10 +21,13 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageAmount;//Positive
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float Knockback;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	FGameplayTag ParryTag;
 	
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

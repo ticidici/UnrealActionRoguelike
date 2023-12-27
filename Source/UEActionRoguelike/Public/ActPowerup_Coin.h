@@ -4,16 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "ActPowerupActor.h"
-#include "ActPowerup_HealthPotion.generated.h"
+#include "ActPowerup_Coin.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UEACTIONROGUELIKE_API AActPowerup_HealthPotion : public AActPowerupActor
+class UEACTIONROGUELIKE_API AActPowerup_Coin : public AActPowerupActor
 {
 	GENERATED_BODY()
-
+	
+public:
+	
+	AActPowerup_Coin();
+	
 protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components");
@@ -21,10 +25,6 @@ protected:
 	
 public:
 
-	AActPowerup_HealthPotion();
-
-	UPROPERTY(EditDefaultsOnly)	
-	int CreditsPrice;
-	
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+	
 };

@@ -3,11 +3,11 @@
 
 #include "AI/ActAICharacter.h"
 
+#include "ActActionComponent.h"
 #include "ActAttributeComponent.h"
 #include "ActWorldUserWidget.h"
 #include "AIController.h"
 #include "BrainComponent.h"
-#include "AI/ActAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -17,6 +17,7 @@ AActAICharacter::AActAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	AttributeComp = CreateDefaultSubobject<UActAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<UActActionComponent>("ActionComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);

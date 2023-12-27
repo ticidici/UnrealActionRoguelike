@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "ActAICharacter.generated.h"
 
+class UActActionComponent;
 class UPawnSensingComponent;
 class UUserWidget;
 class UActWorldUserWidget;
@@ -38,6 +39,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UActAttributeComponent> AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UActActionComponent> ActionComp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 	
@@ -54,7 +58,6 @@ protected:
 	float HitFlashSpeed;
 	UPROPERTY(EditAnywhere, Category = "Receive Hit")
 	FColor HitFlashColor;
-
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
