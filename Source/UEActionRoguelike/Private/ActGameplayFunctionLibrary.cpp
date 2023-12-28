@@ -11,7 +11,7 @@ bool UActGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* Targ
 	UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(TargetActor);
 	if(AttributeComp)
 	{
-		return AttributeComp->ApplyHealthChange(DamageCauser, DamageAmount);
+		return AttributeComp->ApplyHealthChange(DamageCauser, -abs(DamageAmount));
 	}
 	return false;
 }

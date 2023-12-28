@@ -4,11 +4,11 @@
 #include "ActMagicProjectile.h"
 
 #include "ActActionComponent.h"
-#include "ActAttributeComponent.h"
 #include "ActGameplayFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Logging/StructuredLog.h"
+#include "ActActionEffect.h"
 
 // Sets default values
 AActMagicProjectile::AActMagicProjectile()
@@ -66,9 +66,16 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		CustomImpulse.Normalize();
 		CustomImpulse *= Knockback;
 		
-		if(!UActGameplayFunctionLibrary::ApplyDirectionalDamage(
-			GetInstigator(), OtherActor, -abs(DamageAmount + RandomDamage), SweepResult, CustomImpulse, false
+		if(UActGameplayFunctionLibrary::ApplyDirectionalDamage(
+			GetInstigator(), OtherActor, abs(DamageAmount + RandomDamage), SweepResult, CustomImpulse, false
 			))
+		{
+			if(ActionComp)
+			{
+				ActionComp->AddAction(GetInstigator(), BurningActionClass);
+			}
+		}
+		else
 		{
 			UE_LOGFMT(LogTemp, Log,"Could not damage actor with magic projectile. Probably dead already.");
 		}

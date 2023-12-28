@@ -24,13 +24,22 @@ public:
 	FGameplayTagContainer ActiveGameplayTags;
 	
 	UFUNCTION(BlueprintCallable, Category = "Actions")
-	void AddAction(TSubclassOf<UActAction> ActionClass);
+	void AddAction(AActor* Instigator, TSubclassOf<UActAction> ActionClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	bool RemoveAction(UActAction* ActionToRemove);
+
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	bool RemoveActionByName(FName ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
+
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	UActAction* GetActionByName(FName ActionName);
 	
 protected:
 

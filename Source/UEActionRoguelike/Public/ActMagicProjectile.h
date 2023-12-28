@@ -9,6 +9,7 @@
 #include "ActMagicProjectile.generated.h"
 
 
+class UActActionEffect;
 
 UCLASS()
 class UEACTIONROGUELIKE_API AActMagicProjectile : public AActProjectileBase
@@ -26,6 +27,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float Knockback;
 
+	//Could be an array and be more generic
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TSubclassOf<UActActionEffect> BurningActionClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FGameplayTag ParryTag;
 	
