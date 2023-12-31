@@ -22,6 +22,14 @@ public:
 	
 protected:
 
+	// Reliable - Will always arrive, eventually. Request will be re-sent unless an acknowledgement was received.
+	//		Same idea as in TCP. Will stop processing subsequent calls until this is done correctly.
+	// Unreliable - Not guaranteed, packet can get lost and won't retry.
+	//		Same idea as in UDP. We would want this, for example, when updating something that gets called very often,
+	//		like the position, which probably will change anyway in the next call
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
+	
 	void FindBestInteractable();
 	
 	virtual void BeginPlay() override;

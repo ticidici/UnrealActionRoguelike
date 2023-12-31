@@ -23,6 +23,12 @@ public:
 
 protected:
 
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", BlueprintReadOnly)//RepNotify
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
+	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
@@ -40,4 +46,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//if a property is marked as Replicated, this method gets automatically declared in the header file without us having to do it
+	//declared in ActItemChest.generated.h, we can still define it manually and won't cause errors
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
