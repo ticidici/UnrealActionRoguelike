@@ -15,6 +15,7 @@ AActPowerupActor::AActPowerupActor()
 
 	RespawnTime = 10.0f;
 
+	bReplicates = true;
 }
 
 void AActPowerupActor::ShowPowerup()

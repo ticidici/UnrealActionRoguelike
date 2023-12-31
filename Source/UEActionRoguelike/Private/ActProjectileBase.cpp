@@ -25,6 +25,8 @@ AActProjectileBase::AActProjectileBase()
 	MovementComp->bInitialVelocityInLocalSpace = true;
 	MovementComp->ProjectileGravityScale = 0.0;
 	MovementComp->InitialSpeed = 8000;//just default, will change in most cases
+
+	bReplicates = true;
 }
 
 void AActProjectileBase::PostInitializeComponents()
