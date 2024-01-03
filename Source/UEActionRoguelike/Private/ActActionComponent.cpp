@@ -10,6 +10,8 @@
 UActActionComponent::UActActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicatedByDefault(true);
 }
 
 void UActActionComponent::BeginPlay()
@@ -92,6 +94,12 @@ bool UActActionComponent::StartActionByName(AActor* Instigator, FName ActionName
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 				continue;
 			}
+
+			//we don't want the server to call itself in an infinite loop
+			if(!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator, ActionName);
+			}
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -126,5 +134,10 @@ UActAction* UActActionComponent::GetActionByName(FName ActionName)
 		}
 	}
 	return nullptr;
+}
+
+void UActActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
 
