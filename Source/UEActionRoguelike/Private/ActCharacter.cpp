@@ -183,6 +183,8 @@ void AActCharacter::SprintStop()
 void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
                                     float Delta, float ActualDelta)
 {
+	UKismetSystemLibrary::PrintString(this);
+
 	if(Delta < 0.0f)
 	{
 		UGameplayStatics::PlayWorldCameraShake(GetWorld(),ImpactShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);

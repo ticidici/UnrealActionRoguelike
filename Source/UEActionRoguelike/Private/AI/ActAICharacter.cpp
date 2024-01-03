@@ -26,7 +26,6 @@ AActAICharacter::AActAICharacter()
 	HitFlashTimeParamName = TEXT("TimeToHit");
 	HitFlashSpeedParamName = TEXT("HitFlashSpeed");
 	HitFlashColorParamName = TEXT("HitFlashColor");
-
 }
 
 void AActAICharacter::PostInitializeComponents()

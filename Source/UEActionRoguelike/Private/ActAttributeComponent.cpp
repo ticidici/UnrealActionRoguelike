@@ -4,7 +4,9 @@
 #include "ActAttributeComponent.h"
 
 #include "ActGameModeBase.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Logging/StructuredLog.h"
+#include "Net/UnrealNetwork.h"
 
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("act.DamageMultiplier"), 1.0f, TEXT("Global Damage Modifier for AttributeComponent."), ECVF_Cheat);
@@ -16,7 +18,10 @@ UActAttributeComponent::UActAttributeComponent()
 	MaxHealth = 999;
 	Health = MaxHealth;
 	PercentageConsideredLowHealth = 25.0f;
+
+	SetIsReplicatedByDefault(true);
 }
+
 
 bool UActAttributeComponent::Kill(AActor* InstigatorActor)
 {
@@ -66,10 +71,10 @@ bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float De
 
 	float ActualDelta = Health - OldHealth;
 
-	//float RandomDamage = FMath::Floor(FMath::RandRange(1.0, 100.0));
+	//server will eventually call it when received the multicast
+	//OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta, ActualDelta);
+	MulticastHealthChanged(InstigatorActor, Health, Delta, ActualDelta);
 	
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta, ActualDelta);
-
 	//Died
 	if(ActualDelta < 0.0f && Health <= 0.0f)
 	{
@@ -82,6 +87,7 @@ bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float De
 	
 	return ActualDelta != 0;
 }
+
 
 UActAttributeComponent* UActAttributeComponent::GetAttributes(AActor* FromActor)
 {
@@ -103,4 +109,18 @@ bool UActAttributeComponent::IsActorAlive(AActor* Actor)
 	}
 
 	return false;
+}
+
+void UActAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth,
+	float Delta, float ActualDelta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta, ActualDelta);
+}
+
+void UActAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActAttributeComponent, Health);
+	DOREPLIFETIME(UActAttributeComponent, MaxHealth);
 }

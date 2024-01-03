@@ -26,13 +26,16 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 	float MaxHealth;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 	float Health;
 	UPROPERTY(EditDefaultsOnly, meta = (UIMin = 1, UIMax = 100))
 	float PercentageConsideredLowHealth;
 
+	UFUNCTION(NetMulticast, Reliable) // @FIXME: mark as unreliable once we moved the 'state' out of actcharacter
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta, float ActualDelta);
+	
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -51,4 +54,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
