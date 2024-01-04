@@ -4,6 +4,7 @@
 #include "ActAttributeComponent.h"
 
 #include "ActGameModeBase.h"
+#include "FunctionalTestingModule.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/StructuredLog.h"
 #include "Net/UnrealNetwork.h"
@@ -19,6 +20,9 @@ UActAttributeComponent::UActAttributeComponent()
 	Health = MaxHealth;
 	PercentageConsideredLowHealth = 25.0f;
 
+	MaxRage = 500;
+	Rage = 0;
+	
 	SetIsReplicatedByDefault(true);
 }
 
@@ -43,9 +47,12 @@ bool UActAttributeComponent::isLowHealth()
 	return Health <= MaxHealth * PercentageConsideredLowHealth * 0.01f;
 }
 
-float UActAttributeComponent::GetHealthMax()
+bool UActAttributeComponent::TrySpendRage(float Quantity)
 {
-	return MaxHealth;
+	const float AbsQuantity = FMath::Abs(Quantity);
+	if(AbsQuantity > Rage) return false;
+	ApplyRageChange(-AbsQuantity);
+	return true;
 }
 
 bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
@@ -88,6 +95,17 @@ bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float De
 	return ActualDelta != 0;
 }
 
+bool UActAttributeComponent::ApplyRageChange(float Delta)
+{
+	const float OriginalRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0, MaxRage);
+	float ActualDelta =  Rage - OriginalRage;
+	OnRageChanged.Broadcast(this, Rage, Delta, ActualDelta);
+	FString DebugMessage = "Rage = " + FString::SanitizeFloat(Rage);
+	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Orange, DebugMessage);
+	return ActualDelta != 0;
+}
+
 
 UActAttributeComponent* UActAttributeComponent::GetAttributes(AActor* FromActor)
 {
@@ -123,4 +141,6 @@ void UActAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME(UActAttributeComponent, Health);
 	DOREPLIFETIME(UActAttributeComponent, MaxHealth);
+	DOREPLIFETIME(UActAttributeComponent, Rage);
+	DOREPLIFETIME(UActAttributeComponent, MaxRage);
 }

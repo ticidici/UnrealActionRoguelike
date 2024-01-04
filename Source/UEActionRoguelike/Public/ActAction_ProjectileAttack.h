@@ -53,6 +53,9 @@ protected:
 	
 public:
 
+	UPROPERTY(EditDefaultsOnly)
+	float RageCost;
+	
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 
 };

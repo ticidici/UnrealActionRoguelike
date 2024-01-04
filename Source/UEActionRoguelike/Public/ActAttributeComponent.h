@@ -8,6 +8,7 @@
 
 //class keyword is an inline forward declaration
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnHealthChanged, AActor*, InstigatorActor, class UActAttributeComponent*, OwningComp, float, NewHealth, float, Delta, float, ActualDelta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnRageChanged, class UActAttributeComponent*, OwningComp, float, NewRage, float, Delta, float, ActualDelta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UEACTIONROGUELIKE_API UActAttributeComponent : public UActorComponent
@@ -33,6 +34,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta = (UIMin = 1, UIMax = 100))
 	float PercentageConsideredLowHealth;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
+	float MaxRage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
+	float Rage;
+	
 	UFUNCTION(NetMulticast, Reliable) // @FIXME: mark as unreliable once we moved the 'state' out of actcharacter
 	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta, float ActualDelta);
 	
@@ -45,15 +51,24 @@ public:
 	bool IsAlive() const;
 	bool isFullHealth();
 	bool isLowHealth();
-	float GetHealthMax();
+	FORCEINLINE float GetHealthMax() { return MaxHealth; }
+	
+	FORCEINLINE bool isFullRage() {	return Rage >= MaxRage; }
+	FORCEINLINE float GetRageMax() { return MaxRage; }
+	bool TrySpendRage(float Quantity); 
 
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnRageChanged OnRageChanged;
+	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
-
+	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool ApplyRageChange(float Delta);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

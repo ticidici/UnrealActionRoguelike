@@ -187,6 +187,16 @@ void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeCompon
 
 	if(Delta < 0.0f)
 	{
+		if(ActualDelta < 0.0f && !OwningComp->isFullRage())
+		{
+			constexpr float MaxHealthChange = 500.f;
+			const float Ratio = FMath::Clamp(FMath::Abs(ActualDelta)/MaxHealthChange, 0, 1);
+			constexpr float MaxRageChange = 300.f;
+			const float RageChange = MaxRageChange * Ratio;
+			
+			OwningComp->ApplyRageChange(FMath::CeilToInt(RageChange));
+		}
+		
 		UGameplayStatics::PlayWorldCameraShake(GetWorld(),ImpactShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);
 		
 		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
