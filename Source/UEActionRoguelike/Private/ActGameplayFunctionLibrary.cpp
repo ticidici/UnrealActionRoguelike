@@ -6,21 +6,21 @@
 #include "ActAttributeComponent.h"
 #include "Blueprint/UserWidget.h"
 
-bool UActGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount)
+bool UActGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, FGameplayTagContainer HealthVariationTags)
 {
 	UActAttributeComponent* AttributeComp = UActAttributeComponent::GetAttributes(TargetActor);
 	if(AttributeComp)
 	{
-		return AttributeComp->ApplyHealthChange(DamageCauser, -abs(DamageAmount));
+		return AttributeComp->ApplyHealthChange(DamageCauser, -abs(DamageAmount), HealthVariationTags);
 	}
 	return false;
 }
 
 //Pass a modified Hit Result (impact normal) if we want a custom impulse
 bool UActGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount,
-	const FHitResult& HitResult, FVector CustomImpulse, bool bDefaultImpulse)
+	const FHitResult& HitResult, FVector CustomImpulse, FGameplayTagContainer HealthVariationTags, bool bDefaultImpulse)
 {
-	bool Result = ApplyDamage(DamageCauser, TargetActor, DamageAmount);
+	bool Result = ApplyDamage(DamageCauser, TargetActor, DamageAmount, HealthVariationTags);
 	//if we don't put the impulse inside the if it moves even in death
 	UPrimitiveComponent* HitComp = HitResult.GetComponent();
 	if(HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))

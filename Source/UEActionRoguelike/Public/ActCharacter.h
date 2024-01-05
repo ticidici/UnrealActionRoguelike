@@ -74,7 +74,7 @@ protected:
 	void SprintStop();
 
 	UFUNCTION()
-	void OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta, float ActualDelta);
+	void OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta, float ActualDelta, FGameplayTagContainer HealthVariationTags);
 
 	virtual void PostInitializeComponents() override;
 	

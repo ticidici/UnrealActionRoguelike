@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ActGameplayFunctionLibrary.generated.h"
 
@@ -17,8 +18,8 @@ class UEACTIONROGUELIKE_API UActGameplayFunctionLibrary : public UBlueprintFunct
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	static bool ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount);
+	static bool ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, FGameplayTagContainer HealthVariationTags);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	static bool ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, const FHitResult& HitResult, FVector CustomImpulse, bool bDefaultImpulse = true);
+	static bool ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, const FHitResult& HitResult, FVector CustomImpulse, FGameplayTagContainer HealthVariationTags, bool bDefaultImpulse = true);
 };

@@ -67,7 +67,8 @@ void AActMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponen
 		CustomImpulse *= Knockback;
 		
 		if(UActGameplayFunctionLibrary::ApplyDirectionalDamage(
-			GetInstigator(), OtherActor, abs(DamageAmount + RandomDamage), SweepResult, CustomImpulse, false
+			GetInstigator(), OtherActor, abs(DamageAmount + RandomDamage),
+			SweepResult, CustomImpulse, FGameplayTagContainer::EmptyContainer, false
 			))
 		{
 			if(ActionComp)

@@ -38,7 +38,7 @@ EBTNodeResult::Type UActBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		}
 		
 		//TODO animation
-		AttributeComp->ApplyHealthChange(MyCharacter, AttributeComp->GetHealthMax());
+		AttributeComp->ApplyHealthChange(MyCharacter, AttributeComp->GetHealthMax(), FGameplayTagContainer::EmptyContainer);
 		return EBTNodeResult::Succeeded;
 	}
 

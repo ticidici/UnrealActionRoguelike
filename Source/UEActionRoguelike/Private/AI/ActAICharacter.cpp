@@ -66,7 +66,7 @@ void AActAICharacter::OnPawnSeen(APawn* Pawn)
 }
 
 void AActAICharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-	float Delta, float ActualDelta)
+	float Delta, float ActualDelta, FGameplayTagContainer HealthVariationTags)
 {
 	if(ActualDelta < 0.0f)
 	{

@@ -102,7 +102,7 @@ void AActCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void AActCharacter::HealSelf(float Amount)
 {
-	AttributeComp->ApplyHealthChange(this, Amount);
+	AttributeComp->ApplyHealthChange(this, Amount, FGameplayTagContainer::EmptyContainer);
 }
 
 void AActCharacter::MoveForward(float Value /*has default in header*/)
@@ -181,10 +181,8 @@ void AActCharacter::SprintStop()
 }
 
 void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth,
-                                    float Delta, float ActualDelta)
+                                    float Delta, float ActualDelta, FGameplayTagContainer HealthVariationTags)
 {
-	UKismetSystemLibrary::PrintString(this);
-
 	if(Delta < 0.0f)
 	{
 		if(ActualDelta < 0.0f && !OwningComp->isFullRage())

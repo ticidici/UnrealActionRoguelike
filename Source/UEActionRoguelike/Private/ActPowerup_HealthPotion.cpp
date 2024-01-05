@@ -5,6 +5,7 @@
 
 #include "ActAttributeComponent.h"
 #include "ActPlayerState.h"
+#include "GameplayTagContainer.h"
 
 AActPowerup_HealthPotion::AActPowerup_HealthPotion()
 {
@@ -32,7 +33,7 @@ void AActPowerup_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 			//hide short time just to give some kind of feedback
 			HideAndCooldownPowerup(1.0f);
 		}
-		else if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax()))
+		else if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax(), FGameplayTagContainer::EmptyContainer))
 		{
 			//if there is no player state, healing is free (an enemy, for example)
 			HideAndCooldownPowerup(RespawnTime);

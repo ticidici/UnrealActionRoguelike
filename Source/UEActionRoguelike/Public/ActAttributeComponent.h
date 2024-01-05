@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "ActAttributeComponent.generated.h"
 
 //class keyword is an inline forward declaration
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnHealthChanged, AActor*, InstigatorActor, class UActAttributeComponent*, OwningComp, float, NewHealth, float, Delta, float, ActualDelta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChanged, AActor*, InstigatorActor, class UActAttributeComponent*, OwningComp, float, NewHealth, float, Delta, float, ActualDelta, FGameplayTagContainer, HealthVariationTags);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnRageChanged, class UActAttributeComponent*, OwningComp, float, NewRage, float, Delta, float, ActualDelta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -40,7 +41,7 @@ protected:
 	float Rage;
 	
 	UFUNCTION(NetMulticast, Reliable) // @FIXME: mark as unreliable once we moved the 'state' out of actcharacter
-	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta, float ActualDelta);
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta, float ActualDelta, FGameplayTagContainer HealthVariationTags);
 	
 public:
 
@@ -65,7 +66,7 @@ public:
 	FOnRageChanged OnRageChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta, FGameplayTagContainer HealthVariationTags);
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyRageChange(float Delta);

@@ -13,6 +13,8 @@ UActActionEffect_Thorns::UActActionEffect_Thorns()
 
 	PercentageReflected = 20;
 	ActionName = "Thorns";
+	IrreflectableTag = FGameplayTag::RequestGameplayTag(FName("Status.Irreflectable"));
+	ThornDamageTags.AddTag(IrreflectableTag);
 }
 
 void UActActionEffect_Thorns::StartAction_Implementation(AActor* Instigator)
@@ -39,15 +41,16 @@ void UActActionEffect_Thorns::StopAction_Implementation(AActor* Instigator)
 	}
 }
 
-void UActActionEffect_Thorns::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta, float ActualDelta)
+void UActActionEffect_Thorns::OnHealthChanged(AActor* InstigatorActor, UActAttributeComponent* OwningComp, float NewHealth, float Delta,
+	float ActualDelta, FGameplayTagContainer HealthVariationTags)
 {
 	//if dead, can't return damage
 	if(NewHealth <= 0) return;
+	if(HealthVariationTags.HasTag(IrreflectableTag)) return;
 	
 	UActAttributeComponent* InstigatorAttributeComp = UActAttributeComponent::GetAttributes(InstigatorActor);
 	AActor* Owner = GetOwningComponent()->GetOwner();
 	float ReflectedDamage = -FMath::CeilToInt32(FMath::Abs(ActualDelta) * PercentageReflected * 0.01f);
 	
-	//TODO pass gameplay tag, something like "Irreflectable", to avoid an infinite loop, also burning effect should have this
-	InstigatorAttributeComp->ApplyHealthChange(Owner, ReflectedDamage);
+	InstigatorAttributeComp->ApplyHealthChange(Owner, ReflectedDamage, ThornDamageTags);
 }

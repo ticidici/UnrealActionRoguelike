@@ -4,8 +4,7 @@
 #include "ActAttributeComponent.h"
 
 #include "ActGameModeBase.h"
-#include "FunctionalTestingModule.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "GameplayTagContainer.h"
 #include "Logging/StructuredLog.h"
 #include "Net/UnrealNetwork.h"
 
@@ -29,7 +28,7 @@ UActAttributeComponent::UActAttributeComponent()
 
 bool UActAttributeComponent::Kill(AActor* InstigatorActor)
 {
-	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
+	return ApplyHealthChange(InstigatorActor, -GetHealthMax(), FGameplayTagContainer::EmptyContainer);
 }
 
 bool UActAttributeComponent::IsAlive() const
@@ -55,7 +54,7 @@ bool UActAttributeComponent::TrySpendRage(float Quantity)
 	return true;
 }
 
-bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
+bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta, FGameplayTagContainer HealthVariationTags)
 {
 	if(Delta < 0 && !GetOwner()->CanBeDamaged())//found looking at cheat manager
 	{
@@ -80,7 +79,7 @@ bool UActAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float De
 
 	//server will eventually call it when received the multicast
 	//OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta, ActualDelta);
-	MulticastHealthChanged(InstigatorActor, Health, Delta, ActualDelta);
+	MulticastHealthChanged(InstigatorActor, Health, Delta, ActualDelta, HealthVariationTags);
 	
 	//Died
 	if(ActualDelta < 0.0f && Health <= 0.0f)
@@ -101,8 +100,6 @@ bool UActAttributeComponent::ApplyRageChange(float Delta)
 	Rage = FMath::Clamp(Rage + Delta, 0, MaxRage);
 	float ActualDelta =  Rage - OriginalRage;
 	OnRageChanged.Broadcast(this, Rage, Delta, ActualDelta);
-	FString DebugMessage = "Rage = " + FString::SanitizeFloat(Rage);
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Orange, DebugMessage);
 	return ActualDelta != 0;
 }
 
@@ -130,9 +127,9 @@ bool UActAttributeComponent::IsActorAlive(AActor* Actor)
 }
 
 void UActAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth,
-	float Delta, float ActualDelta)
+	float Delta, float ActualDelta, FGameplayTagContainer HealthVariationTags)
 {
-	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta, ActualDelta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta, ActualDelta, HealthVariationTags);
 }
 
 void UActAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
