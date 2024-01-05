@@ -52,10 +52,10 @@ protected:
 	void AttackDelay_Elapsed(AActCharacter* InstigatorCharacter);
 	
 public:
-
 	UPROPERTY(EditDefaultsOnly)
 	float RageCost;
 	
 	virtual void StartAction_Implementation(AActor* Instigator) override;
+	virtual bool CanStart_Implementation(AActor* Instigator) override;
 
 };

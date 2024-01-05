@@ -194,7 +194,7 @@ void AActCharacter::OnHealthChanged(AActor* InstigatorActor, UActAttributeCompon
 			constexpr float MaxRageChange = 300.f;
 			const float RageChange = MaxRageChange * Ratio;
 			
-			OwningComp->ApplyRageChange(FMath::CeilToInt(RageChange));
+			OwningComp->ApplyRageChange(FMath::CeilToInt32(RageChange));
 		}
 		
 		UGameplayStatics::PlayWorldCameraShake(GetWorld(),ImpactShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);

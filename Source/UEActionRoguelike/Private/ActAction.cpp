@@ -6,6 +6,7 @@
 #include "ActActionComponent.h"
 #include "Logging/StructuredLog.h"
 
+
 bool UActAction::CanStart_Implementation(AActor* Instigator)
 {
 	if(IsRunning())
@@ -57,6 +58,7 @@ UWorld* UActAction::GetWorld() const
 
 	return nullptr;
 }
+
 
 UActActionComponent* UActAction::GetOwningComponent() const
 {

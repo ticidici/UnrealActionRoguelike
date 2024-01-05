@@ -42,6 +42,11 @@ void UActActionComponent::AddAction(AActor* Instigator, TSubclassOf<UActAction> 
 	UActAction* NewAction = NewObject<UActAction>(this, ActionClass);
 	if(ensure(NewAction))
 	{
+		if (NewAction->ActionName == "None")
+		{
+			UE_LOGFMT(LogTemp, Error, "There's an Action with None as its ActionName.");
+		}
+		
 		//we cancel the previous one if there is
 		UActAction* OldAction = GetActionByName(NewAction->ActionName);
 		if(OldAction)

@@ -17,7 +17,7 @@ UCLASS(Blueprintable)
 class UEACTIONROGUELIKE_API UActAction : public UObject
 {
 	GENERATED_BODY()
-	
+
 protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Action")

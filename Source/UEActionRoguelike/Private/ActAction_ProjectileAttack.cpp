@@ -20,20 +20,6 @@ UActAction_ProjectileAttack::UActAction_ProjectileAttack()
 
 void UActAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 {
-	if(RageCost > 0)
-	{
-		UActAttributeComponent* AttributeComponent = UActAttributeComponent::GetAttributes(Instigator);
-		if(AttributeComponent && AttributeComponent->GetRageMax() > 0)
-		{
-			if(!AttributeComponent->TrySpendRage(RageCost))
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Could not Start action. Not enough Rage.");
-				return;
-			}
-		}
-		//if does not have attribute component or does not use rage, using the action is free
-	}
-	
 	Super::StartAction_Implementation(Instigator);
 
 	AActCharacter* Character = Cast<AActCharacter>(Instigator);
@@ -54,6 +40,25 @@ void UActAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackAnimDelay, false);
 	}
+}
+
+bool UActAction_ProjectileAttack::CanStart_Implementation(AActor* Instigator)
+{
+	if(RageCost > 0)
+	{
+		UActAttributeComponent* AttributeComponent = UActAttributeComponent::GetAttributes(Instigator);
+		if(AttributeComponent && AttributeComponent->GetRageMax() > 0)
+		{
+			if(!AttributeComponent->TrySpendRage(RageCost))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Could not Start action. Not enough Rage.");
+				return false;
+			}
+		}
+		//if does not have attribute component or does not use rage, using the action is free
+	}
+	
+	return Super::CanStart_Implementation(Instigator);
 }
 
 void UActAction_ProjectileAttack::AttackDelay_Elapsed(AActCharacter* InstigatorCharacter)
