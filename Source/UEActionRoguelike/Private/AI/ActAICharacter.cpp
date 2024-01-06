@@ -55,7 +55,17 @@ void AActAICharacter::SetTargetActor(AActor* NewTarget)
 	AAIController* AIC = GetController<AAIController>();
 	if(AIC)
 	{
-		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+		if(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor") != NewTarget)
+		{
+			UActWorldUserWidget* PlayerSpottedWidget = CreateWidget<UActWorldUserWidget>(GetWorld(), PlayerSpottedWidgetClass);
+			if(PlayerSpottedWidget)
+			{
+				PlayerSpottedWidget->AttachedActor = this;
+				PlayerSpottedWidget->AddToViewport();
+			}
+			
+			AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+		}
 	}
 }
 

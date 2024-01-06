@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> PlayerSpottedWidgetClass;
+	
 	TObjectPtr<UActWorldUserWidget> ActiveHealthBar;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
