@@ -61,7 +61,7 @@ void AActAICharacter::SetTargetActor(AActor* NewTarget)
 			if(PlayerSpottedWidget)
 			{
 				PlayerSpottedWidget->AttachedActor = this;
-				PlayerSpottedWidget->AddToViewport();
+				PlayerSpottedWidget->AddToViewport(10);
 			}
 			
 			AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
