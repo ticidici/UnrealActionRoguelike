@@ -5,6 +5,7 @@
 
 #include "ActAction.h"
 #include "Logging/StructuredLog.h"
+#include "UEActionRoguelike/UEActionRoguelike.h"
 
 
 UActActionComponent::UActActionComponent()
@@ -27,8 +28,23 @@ void UActActionComponent::BeginPlay()
 void UActActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, DebugMsg);
+	
+	//FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+	//GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, DebugMsg);
+
+	//Draw All Actions
+	for(UActAction* Action : Actions)
+	{
+		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
+
+		FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
+			*GetNameSafe(GetOwner()),
+			*Action->ActionName.ToString(),
+			Action->IsRunning() ? TEXT("true") : TEXT("false"),
+			*GetNameSafe(GetOuter()));
+
+		LogOnScreen(this, ActionMsg, TextColor, 0.f);
+	}
 }
 
 

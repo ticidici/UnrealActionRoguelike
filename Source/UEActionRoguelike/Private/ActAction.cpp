@@ -5,6 +5,7 @@
 
 #include "ActActionComponent.h"
 #include "Logging/StructuredLog.h"
+#include "UEActionRoguelike/UEActionRoguelike.h"
 
 
 bool UActAction::CanStart_Implementation(AActor* Instigator)
@@ -27,8 +28,9 @@ bool UActAction::CanStart_Implementation(AActor* Instigator)
 
 void UActAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOGFMT(LogTemp, Log, "Running: {Name}", GetNameSafe(this));
-
+	//UE_LOGFMT(LogTemp, Log, "Running: {Name}", GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
+	
 	UActActionComponent* Comp = GetOwningComponent();
 	Comp->ActiveGameplayTags.AppendTags(GrantsTags);
 	
@@ -37,7 +39,8 @@ void UActAction::StartAction_Implementation(AActor* Instigator)
 
 void UActAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOGFMT(LogTemp, Log, "Stopped: {Name}", GetNameSafe(this));
+	//UE_LOGFMT(LogTemp, Log, "Stopped: {Name}", GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 
 	ensureAlways(bIsRunnning);
 	
