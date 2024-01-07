@@ -8,7 +8,7 @@
 
 UActActionEffect_Thorns::UActActionEffect_Thorns()
 {
-	Duration = 0;//infinite
+	Duration = 20;
 	Period = 0;//no periodic effect
 
 	PercentageReflected = 20;
@@ -33,6 +33,8 @@ void UActActionEffect_Thorns::StopAction_Implementation(AActor* Instigator)
 {
 	Super::StopAction_Implementation(Instigator);
 
+	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Yellow, "Thorns buff wears out");
+	
 	AActor* Owner = GetOwningComponent()->GetOwner();
 	if(Owner)
 	{

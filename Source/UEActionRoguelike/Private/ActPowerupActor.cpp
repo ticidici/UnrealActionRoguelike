@@ -26,6 +26,7 @@ void AActPowerupActor::ShowPowerup()
 void AActPowerupActor::HideAndCooldownPowerup(float CooldownTime)
 {
 	SetPowerupState(false);
+	if(CooldownTime < 0) return;
 	GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &AActPowerupActor::ShowPowerup, CooldownTime);
 }
 
