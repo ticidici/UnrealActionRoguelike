@@ -5,8 +5,14 @@
 
 #include "ActActionComponent.h"
 #include "Logging/StructuredLog.h"
+#include "Net/UnrealNetwork.h"
 #include "UEActionRoguelike/UEActionRoguelike.h"
 
+
+void UActAction::Initialize(UActActionComponent* NewActionComp)
+{
+	ActionComp = NewActionComp;
+}
 
 bool UActAction::CanStart_Implementation(AActor* Instigator)
 {
@@ -42,7 +48,8 @@ void UActAction::StopAction_Implementation(AActor* Instigator)
 	//UE_LOGFMT(LogTemp, Log, "Stopped: {Name}", GetNameSafe(this));
 	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 
-	ensureAlways(bIsRunnning);
+	//this ensure is not valid for online, as we are replicating the variable, and it changes in client before calling this method 
+	//ensureAlways(bIsRunnning);
 	
 	UActActionComponent* Comp = GetOwningComponent();
 	Comp->ActiveGameplayTags.RemoveTags(GrantsTags);
@@ -53,19 +60,30 @@ void UActAction::StopAction_Implementation(AActor* Instigator)
 UWorld* UActAction::GetWorld() const
 {
 	// Outer is set when creating action via NewObject<T>
-	UActorComponent* Comp = Cast<UActorComponent>(GetOuter());
-	if(Comp)
+	AActor* Actor = Cast<AActor>(GetOuter());
+	if(Actor)
 	{
-		return Comp->GetWorld();
+		return Actor->GetWorld();
 	}
 
 	return nullptr;
 }
 
-
 UActActionComponent* UActAction::GetOwningComponent() const
 {
-	return Cast<UActActionComponent>(GetOuter());
+	return ActionComp;
+}
+
+void UActAction::OnRep_IsRunning()
+{
+	if(bIsRunnning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
 }
 
 bool UActAction::IsRunning() const
@@ -73,3 +91,10 @@ bool UActAction::IsRunning() const
 	return bIsRunnning;
 }
 
+void UActAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActAction, bIsRunnning);
+	DOREPLIFETIME(UActAction, ActionComp);
+}

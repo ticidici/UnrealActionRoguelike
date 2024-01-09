@@ -20,6 +20,9 @@ class UEACTIONROGUELIKE_API UActAction : public UObject
 
 protected:
 
+	UPROPERTY(Replicated)
+	TObjectPtr<UActActionComponent> ActionComp;
+	
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	UActActionComponent* GetOwningComponent() const;
 	
@@ -31,10 +34,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
 
+	UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
 	bool bIsRunnning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 	
 public:
 
+	void Initialize(UActActionComponent* NewActionComp);
+	
 	//Start immediately when added to an action component
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	bool bAutoStart;
@@ -57,4 +66,6 @@ public:
 	FName ActionName;
 
 	virtual UWorld* GetWorld() const override;
+
+	FORCEINLINE virtual bool IsSupportedForNetworking() const override { return true; }
 };

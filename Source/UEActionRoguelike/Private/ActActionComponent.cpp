@@ -4,7 +4,9 @@
 #include "ActActionComponent.h"
 
 #include "ActAction.h"
+#include "Engine/ActorChannel.h"
 #include "Logging/StructuredLog.h"
+#include "Net/UnrealNetwork.h"
 #include "UEActionRoguelike/UEActionRoguelike.h"
 
 
@@ -18,12 +20,16 @@ UActActionComponent::UActActionComponent()
 void UActActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	for (TSubclassOf<UActAction> ActionClass : DefaultActions)
+
+	//server only
+	if(GetOwner()->HasAuthority())
 	{
-		AddAction(GetOwner(), ActionClass);
+		for (TSubclassOf<UActAction> ActionClass : DefaultActions)
+		{
+			AddAction(GetOwner(), ActionClass);
+		}
 	}
 }
-
 
 void UActActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -41,12 +47,11 @@ void UActActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 			*GetNameSafe(GetOwner()),
 			*Action->ActionName.ToString(),
 			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(GetOuter()));
+			*GetNameSafe(Action->GetOuter()));
 
 		LogOnScreen(this, ActionMsg, TextColor, 0.f);
 	}
 }
-
 
 void UActActionComponent::AddAction(AActor* Instigator, TSubclassOf<UActAction> ActionClass)
 {
@@ -55,9 +60,11 @@ void UActActionComponent::AddAction(AActor* Instigator, TSubclassOf<UActAction> 
 		return;
 	}
 
-	UActAction* NewAction = NewObject<UActAction>(this, ActionClass);
+	UActAction* NewAction = NewObject<UActAction>(GetOwner(), ActionClass);
 	if(ensure(NewAction))
 	{
+		NewAction->Initialize(this);
+		
 		if (NewAction->ActionName == "None")
 		{
 			UE_LOGFMT(LogTemp, Error, "There's an Action with None as its ActionName.");
@@ -161,4 +168,26 @@ void UActActionComponent::ServerStartAction_Implementation(AActor* Instigator, F
 {
 	StartActionByName(Instigator, ActionName);
 }
+
+bool UActActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	for(UActAction* Action : Actions)
+	{
+		if(Action)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		}
+	}
+	
+	return WroteSomething;
+}
+
+void UActActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActActionComponent, Actions);
+}
+
 
